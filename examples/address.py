@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from jsmapper import (
     JSONSchema,
     Mapping,
@@ -39,21 +41,22 @@ class Address(Mapping):
 
 
 AddressSchema = JSONSchema(
-    type=Object,
+    type=Object(
+        properties=Address,
+        dependencies=[
+            (Address.post_office_box, Address.street_address),
+            (Address.extended_address, Address.street_address),
+        ],
+        required=[Address.locality, Address.region],
+    ),
     description="An Address following the convention of "
                 "http://microformats.org/wiki/hcard",
-    properties=Address,
-    dependencies=[
-        (Address.post_office_box, Address.street_address),
-        (Address.extended_address, Address.street_address),
-    ],
-    required=[Address.locality, Address.region],
 )
 
 
 def handler(request):
     try:
-        address = AddressSchema.bind(request.json_body)
+        address = AddressSchema.bind(json.loads(request))
     except ValidationError:
         return 400
     else:

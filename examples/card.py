@@ -130,27 +130,27 @@ class Card(Mapping):
 
     fn = JSONSchema(type=String(), description="Formatted Name")
 
-    @object_property(name='familyName', required=True)
+    @object_property(name='familyName')
     def family_name(self):
         return JSONSchema(
             String(max_length=10),  # FIXME
         )
 
-    @object_property(name='givenName', required=True)
+    @object_property(name='givenName')
     def given_name(self):
         return JSONSchema(String())
 
-    @object_property(name='additionalName', required=True)
+    @object_property(name='additionalName')
     def additional_name(self):
         return JSONSchema(String())
 
     @object_property(name='honorific_prefix')
     def honorific_prefix(self):
-        return JSONSchema(Array(String))
+        return JSONSchema(Array(items=JSONSchema(String())))
 
     @object_property(name='honorificSuffix')
     def honorific_suffix(self):
-        return JSONSchema(Array(String))
+        return JSONSchema(Array(items=JSONSchema(String())))
 
     nickname = JSONSchema(String())
     url = JSONSchema(String(), format="uri")
@@ -174,18 +174,21 @@ class Card(Mapping):
         type = JSONSchema(String())
         value = JSONSchema(String(), format="phone")
 
-    tel = JSONSchema(Object(), properties=Tel)
+    tel = JSONSchema(Object(properties=Tel))
 
     class Org(Mapping):
         organizationName = JSONSchema(String())
         organizationUnit = JSONSchema(String())
 
-    org = JSONSchema(Object(), properties=Org)
+    org = JSONSchema(Object(properties=Org))
 
 
 CardSchema = JSONSchema(
-    Object(properties=Card),
-    schema=JSONSchemaDraftV3
+    Object(
+        properties=Card,
+        required=[Card.family_name, Card.given_name],
+    ),
+    schema=JSONSchemaDraftV3,
 )
 
 
