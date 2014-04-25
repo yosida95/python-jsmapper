@@ -2,21 +2,22 @@
 
 import json
 
-from jsmapper import JsonSchema
-from jsmapper.exceptions import ValidationError
-from jsmapper.schema import (
+from jsmapper import (
+    JSONSchema,
+    Mapping,
     Reference,
+    object_property,
 )
-from jsmapper.defines import JsonSchemaDraftV3
+from jsmapper.defines import JSONSchemaDraftV3
+from jsmapper.exceptions import ValidationError
 from jsmapper.types import (
     Array,
     Object,
     String,
-    object_property,
 )
 
 
-class Card(JsonSchema):
+class Card(Mapping):
     """
     {
         "$schema": "http://json-schema.org/draft-03/schema#",
@@ -127,64 +128,64 @@ class Card(JsonSchema):
     }
     """
 
-    fn = JsonSchema(type=String(), description="Formatted Name")
+    fn = JSONSchema(type=String(), description="Formatted Name")
 
     @object_property(name='familyName', required=True)
     def family_name(self):
-        return JsonSchema(
+        return JSONSchema(
             String(max_length=10),  # FIXME
         )
 
     @object_property(name='givenName', required=True)
     def given_name(self):
-        return JsonSchema(String())
+        return JSONSchema(String())
 
     @object_property(name='additionalName', required=True)
     def additional_name(self):
-        return JsonSchema(String())
+        return JSONSchema(String())
 
     @object_property(name='honorific_prefix')
     def honorific_prefix(self):
-        return JsonSchema(Array(String))
+        return JSONSchema(Array(String))
 
     @object_property(name='honorificSuffix')
     def honorific_suffix(self):
-        return JsonSchema(Array(String))
+        return JSONSchema(Array(String))
 
-    nickname = JsonSchema(String())
-    url = JsonSchema(String(), format="uri")
-    addr = JsonSchema(Reference("http://json-schema.org/address"))
-    geo = JsonSchema(Reference("http://json-schema.org/geo"))
-    tz = JsonSchema(String())
-    photo = JsonSchema(String())
-    logo = JsonSchema(String())
-    sound = JsonSchema(String())
-    bday = JsonSchema(String(), format="date")
-    title = JsonSchema(String())
-    role = JsonSchema(String())
+    nickname = JSONSchema(String())
+    url = JSONSchema(String(), format="uri")
+    addr = JSONSchema(Reference("http://json-schema.org/address"))
+    geo = JSONSchema(Reference("http://json-schema.org/geo"))
+    tz = JSONSchema(String())
+    photo = JSONSchema(String())
+    logo = JSONSchema(String())
+    sound = JSONSchema(String())
+    bday = JSONSchema(String(), format="date")
+    title = JSONSchema(String())
+    role = JSONSchema(String())
 
-    class Email(JsonSchema):
-        type = JsonSchema(String())
-        value = JsonSchema(String(), format="email")
+    class Email(Mapping):
+        type = JSONSchema(String())
+        value = JSONSchema(String(), format="email")
 
-    email = JsonSchema(Object(properties=Email))
+    email = JSONSchema(Object(properties=Email))
 
-    class Tel(JsonSchema):
-        type = JsonSchema(String())
-        value = JsonSchema(String(), format="phone")
+    class Tel(Mapping):
+        type = JSONSchema(String())
+        value = JSONSchema(String(), format="phone")
 
-    tel = JsonSchema(Object(), properties=Tel)
+    tel = JSONSchema(Object(), properties=Tel)
 
-    class Org(JsonSchema):
-        organizationName = JsonSchema(String())
-        organizationUnit = JsonSchema(String())
+    class Org(Mapping):
+        organizationName = JSONSchema(String())
+        organizationUnit = JSONSchema(String())
 
-    org = JsonSchema(Object(), properties=Org)
+    org = JSONSchema(Object(), properties=Org)
 
 
-CardSchema = JsonSchema(
+CardSchema = JSONSchema(
     Object(properties=Card),
-    schema=JsonSchemaDraftV3
+    schema=JSONSchemaDraftV3
 )
 
 
