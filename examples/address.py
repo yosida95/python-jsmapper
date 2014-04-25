@@ -1,180 +1,50 @@
 # -*- coding: utf-8 -*-
 
-
-from jsmapper.primitive import (
-    Array,
-    Object,
+from jsmapper import JsonSchema
+from jsmapper.exceptions import ValidationError
+from jsmapper.mapping import Mapping
+from jsmapper.schema import Property
+from jsmapper.types import (
     String,
+    Object,
 )
-from jsmapper.schema import (
-    Definition,
-    JsonSchema,
-    Property,
-    Reference,
+
+
+class Address(ObjectProperties):
+    foo = JsonSchema(
+        String(maxLength=10)
+    )
+
+    @object_property(name='personName')
+    def person_name(self):
+        return JsonSchema(
+            type=Object,
+            properties=PersonName,
+            description="",
+        )
+
+
+
+AddressSchema = JsonSchema(
+    type=Address,
+    description="An Address following the convention of "
+                "http://microformats.org/wiki/hcard",
+    dependencies=[
+        (Address.post_office_box, Address.street_address),
+        (Address.extended_address, Address.street_address),
+    ]
+    # properties=Address,
 )
-from jsmapper.defines import JsonSchemaDraftV3
+
+FooSchema = new Integer(maximum=10)
+foo = FooSchema.bind(request.json_body)
+assert isinstance(foo, int)
 
 
-class Card(JsonSchema):
-    """
-    {
-        "$schema": "http://json-schema.org/draft-03/schema#",
-        "description": "A representation of a person, company, organization, or place",
-        "type": "object",
-        "properties": {
-            "fn": {
-                "description": "Formatted Name",
-                "type": "string"
-            },
-            "familyName": {
-                "type": "string",
-                "required": true
-            },
-            "givenName": {
-                "type": "string",
-                "required": true
-            },
-            "additionalName": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "honorificPrefix": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "honorificSuffix": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "nickname": {
-                "type": "string"
-            },
-            "url": {
-                "type": "string",
-                "format": "uri"
-            },
-            "email": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "type": "string"
-                    },
-                    "value": {
-                        "type": "string",
-                        "format": "email"
-                    }
-                }
-            },
-            "tel": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "type": "string"
-                    },
-                    "value": {
-                        "type": "string",
-                        "format": "phone"
-                    }
-                }
-            },
-            "adr": {
-                "$ref": "http://json-schema.org/address"
-            },
-            "geo": {
-                "$ref": "http://json-schema.org/geo"
-            },
-            "tz": {
-                "type": "string"
-            },
-            "photo": {
-                "type": "string"
-            },
-            "logo": {
-                "type": "string"
-            },
-            "sound": {
-                "type": "string"
-            },
-            "bday": {
-                "type": "string",
-                "format": "date"
-            },
-            "title": {
-                "type": "string"
-            },
-            "role": {
-                "type": "string"
-            },
-            "org": {
-                "type": "object",
-                "properties": {
-                    "organizationName": {
-                        "type": "string"
-                    },
-                    "organizationUnit": {
-                        "type": "string"
-                    }
-                }
-            }
-        }
-    }
-    """
+def main(request):
+    try:
+        address = AddressSchema.bind(request.json_body)
 
-    __jsmeta__ = {
-        "$schema": JsonSchemaDraftV3,
-        "description": "A representation of a person, company, organization,"
-                       "or place",
-        "type": Object,
-    }
-
-    fn = Property(String(description="Formatted Name"))
-    familyName = Property(String(required=True))
-    givenName = Property(String(required=True))
-    additionalName = Property(String(required=True))
-    honorificPrefix = Property(Array(items=String))
-    honorificSuffix = Property(Array(items=String))
-    nickname = String()
-    url = String(format="uri")
-
-    @Definition(name="email")
-    class Email(JsonSchema):
-        __jsmeta__ = {
-            "type": Object,
-        }
-
-        type = String()
-        value = String(format="email")
-
-    @Definition(name="tel")
-    class Tel(JsonSchema):
-        __jsmeta__ = {
-            "type": Object,
-        }
-
-        type = String()
-        value = String(format="phone")
-
-    addr = Property(Reference("http://json-schema.org/address"))
-    geo = Property(Reference("http://json-schema.org/geo"))
-    tz = Property(String())
-    photo = Property(String())
-    logo = Property(String())
-    sound = Property(String())
-    bday = Property(String(format="date"))
-    title = Property(String())
-    role = Property(String())
-
-    @Definition(name="org")
-    class Org(JsonSchema):
-        __jsmeta__ = {
-            "type": Object,
-        }
-
-        organizationName = Property(String())
-        organizationUnit = Property(String())
+        assert isinstance(address, Address)
+    except ValidationError:
+        return 400
