@@ -7,7 +7,8 @@ NoneType = type(None)
 
 class PrimitiveType:
 
-    pass
+    def bind(self, obj):
+        return obj
 
 
 class Array(PrimitiveType):
@@ -85,6 +86,12 @@ class Object(PrimitiveType):
         self.properties = properties
         self.pattern_properties = pattern_properties
         self.dependencies = dependencies
+
+    def bind(self, obj):
+        if isinstance(self.properties, (dict, NoneType)):
+            return super().bind(obj)
+
+        return self.properties._bind(obj)
 
 
 class String(PrimitiveType):
