@@ -52,12 +52,3 @@ AddressSchema = JSONSchema(
     description="An Address following the convention of "
                 "http://microformats.org/wiki/hcard",
 )
-
-
-def handler(request):
-    try:
-        address = AddressSchema.bind(json.loads(request))
-    except ValidationError:
-        return 400
-    else:
-        assert isinstance(address, Address)
