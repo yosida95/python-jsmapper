@@ -17,7 +17,7 @@ class Array(PrimitiveType):
     def __init__(self,
                  items=None, additional_items=True,
                  max_items=None, min_items=None, unique_items=False):
-        assert isinstance(items, ())
+        assert isinstance(items, (list, NoneType))
         assert isinstance(additional_items, bool)
         assert isinstance(max_items, (int, NoneType))
         assert isinstance(min_items, (int, NoneType))
