@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-__all__ = ['JSONSchema']
+__all__ = ['Reference', 'JSONSchema']
 
 NoneType = type(None)
 
@@ -120,3 +120,11 @@ class JSONSchema(JSONSchemaBase):
             dct.update(dct['type'])
 
         return dct
+
+
+class Reference(JSONSchemaBase):
+
+    url = Property('$ref', str)
+
+    def __init__(self, url):
+        self.url = url
