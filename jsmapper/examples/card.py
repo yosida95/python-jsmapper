@@ -1,20 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import json
-
 from jsmapper import (
+    Array,
     JSONSchema,
-    Mapping,
-    Reference,
+    Object,
     object_property,
+    Reference,
+    String,
+    Mapping,
 )
 from jsmapper.defines import JSONSchemaDraftV3
-from jsmapper.exceptions import ValidationError
-from jsmapper.types import (
-    Array,
-    Object,
-    String,
-)
 
 
 class Card(Mapping):
@@ -131,29 +126,29 @@ class Card(Mapping):
     fn = JSONSchema(type=String(), description="Formatted Name")
 
     @object_property(name='familyName')
-    def family_name(self):
+    def family_name():
         return JSONSchema(type=String())
 
     @object_property(name='givenName')
-    def given_name(self):
+    def given_name():
         return JSONSchema(type=String())
 
     @object_property(name='additionalName')
-    def additional_name(self):
+    def additional_name():
         return JSONSchema(type=String())
 
     @object_property(name='honorific_prefix')
-    def honorific_prefix(self):
-        return JSONSchema(Array(items=JSONSchema(type=String())))
+    def honorific_prefix():
+        return JSONSchema(type=Array(items=JSONSchema(type=String())))
 
     @object_property(name='honorificSuffix')
-    def honorific_suffix(self):
-        return JSONSchema(Array(items=JSONSchema(type=String())))
+    def honorific_suffix():
+        return JSONSchema(type=Array(items=JSONSchema(type=String())))
 
     nickname = JSONSchema(type=String())
     url = JSONSchema(type=String(), format="uri")
-    addr = JSONSchema(Reference("http://json-schema.org/address"))
-    geo = JSONSchema(Reference("http://json-schema.org/geo"))
+    addr = Reference("http://json-schema.org/address")
+    geo = Reference("http://json-schema.org/geo")
     tz = JSONSchema(type=String())
     photo = JSONSchema(type=String())
     logo = JSONSchema(type=String())
@@ -188,15 +183,3 @@ CardSchema = JSONSchema(
     ),
     schema=JSONSchemaDraftV3,
 )
-
-
-def handler(request):
-    try:
-        card = CardSchema.bind(json.loads(request))
-    except ValidationError:
-        return 400
-    else:
-        assert isinstance(card, Card)
-        assert isinstance(card.email, Card.Email)
-        assert isinstance(card.tel, Card.Tel)
-        assert isinstance(card.org, Card.Org)
