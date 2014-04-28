@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-__all__ = ['Reference', 'JSONSchema']
+__all__ = ['JSONSchema']
 
 NoneType = type(None)
 
@@ -82,6 +82,7 @@ class JSONSchema(JSONSchemaBase):
     title = Property('title', str, "")
     description = Property('description', str, "")
     default = Property('default')
+    ref = Property('$ref', str, "")
 
     type = Property('type', is_valid_type)
     all_of = Property('allOf', (list, NoneType))
@@ -91,7 +92,8 @@ class JSONSchema(JSONSchemaBase):
 
     format = Property('format', str, "")
 
-    def __init__(self, schema="", title="", description="", default=None,
+    def __init__(self,
+                 schema="", title="", description="", default=None, ref="",
                  type=None, all_of=None, any_of=None, one_of=None, not_=None,
                  format=""):  # difinitions
         # metadata
@@ -99,6 +101,7 @@ class JSONSchema(JSONSchemaBase):
         self.title = title
         self.description = description
         self.default = default
+        self.ref = ref
 
         # general validators
         self.type = type
@@ -120,11 +123,3 @@ class JSONSchema(JSONSchemaBase):
             dct.update(dct['type'])
 
         return dct
-
-
-class Reference(JSONSchemaBase):
-
-    url = Property('$ref', str)
-
-    def __init__(self, url):
-        self.url = url

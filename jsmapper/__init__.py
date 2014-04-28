@@ -4,10 +4,7 @@ from .mapping import (
     Mapping,
     object_property,
 )
-from .schema import (
-    Reference,
-    JSONSchema,
-)
+from .schema import JSONSchema
 from .types import (
     Array,
     Boolean,
@@ -19,7 +16,7 @@ from .types import (
 )
 
 __all__ = [
-    'JSONSchema', 'Reference',
+    'JSONSchema',
     'Mapping', 'object_property',
     'Array', 'Boolean', 'Integer', 'Null', 'Number', 'Object', 'String',
 ]
