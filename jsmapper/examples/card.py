@@ -132,59 +132,57 @@ class Card(Mapping):
 
     @object_property(name='familyName')
     def family_name(self):
-        return JSONSchema(
-            String(max_length=10),  # FIXME
-        )
+        return JSONSchema(type=String())
 
     @object_property(name='givenName')
     def given_name(self):
-        return JSONSchema(String())
+        return JSONSchema(type=String())
 
     @object_property(name='additionalName')
     def additional_name(self):
-        return JSONSchema(String())
+        return JSONSchema(type=String())
 
     @object_property(name='honorific_prefix')
     def honorific_prefix(self):
-        return JSONSchema(Array(items=JSONSchema(String())))
+        return JSONSchema(Array(items=JSONSchema(type=String())))
 
     @object_property(name='honorificSuffix')
     def honorific_suffix(self):
-        return JSONSchema(Array(items=JSONSchema(String())))
+        return JSONSchema(Array(items=JSONSchema(type=String())))
 
-    nickname = JSONSchema(String())
-    url = JSONSchema(String(), format="uri")
+    nickname = JSONSchema(type=String())
+    url = JSONSchema(type=String(), format="uri")
     addr = JSONSchema(Reference("http://json-schema.org/address"))
     geo = JSONSchema(Reference("http://json-schema.org/geo"))
-    tz = JSONSchema(String())
-    photo = JSONSchema(String())
-    logo = JSONSchema(String())
-    sound = JSONSchema(String())
-    bday = JSONSchema(String(), format="date")
-    title = JSONSchema(String())
-    role = JSONSchema(String())
+    tz = JSONSchema(type=String())
+    photo = JSONSchema(type=String())
+    logo = JSONSchema(type=String())
+    sound = JSONSchema(type=String())
+    bday = JSONSchema(type=String(), format="date")
+    title = JSONSchema(type=String())
+    role = JSONSchema(type=String())
 
     class Email(Mapping):
-        type = JSONSchema(String())
-        value = JSONSchema(String(), format="email")
+        type = JSONSchema(type=String())
+        value = JSONSchema(type=String(), format="email")
 
-    email = JSONSchema(Object(properties=Email))
+    email = JSONSchema(type=Object(properties=Email))
 
     class Tel(Mapping):
-        type = JSONSchema(String())
-        value = JSONSchema(String(), format="phone")
+        type = JSONSchema(type=String())
+        value = JSONSchema(type=String(), format="phone")
 
-    tel = JSONSchema(Object(properties=Tel))
+    tel = JSONSchema(type=Object(properties=Tel))
 
     class Org(Mapping):
-        organizationName = JSONSchema(String())
-        organizationUnit = JSONSchema(String())
+        organizationName = JSONSchema(type=String())
+        organizationUnit = JSONSchema(type=String())
 
-    org = JSONSchema(Object(properties=Org))
+    org = JSONSchema(type=Object(properties=Org))
 
 
 CardSchema = JSONSchema(
-    Object(
+    type=Object(
         properties=Card,
         required=[Card.family_name, Card.given_name],
     ),
