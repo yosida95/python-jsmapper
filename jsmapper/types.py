@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from . import Mapping
+from .schema import (
+    JSONSchema,
+    JSONSchemaBase,
+    Property,
+)
+from .mapping import (
+    Mapping,
+    Value,
+    MappingProperty,
+)
 
 NoneType = type(None)
 
@@ -9,58 +18,26 @@ __all__ = [
 ]
 
 
-class TypeAttribute:
-
-    def __init__(self, property_name, types, default=None):
-        assert isinstance(property_name, str)
-        assert isinstance(types, (tuple, type)) or callable(types)
-
-        self.property_name = property_name
-        self.types = types
-        self.default = default
-
-    def set_member_name(self, value):
-        self.member_name = value
-
-    def __get__(self, inst, owner):
-        if inst is None:
-            return self
-
-        return inst.__dict__.get(self.member_name)
-
-    def __set__(self, inst, value):
-        if isinstance(self.types, (tuple, type)):
-            assert isinstance(value, self.types)
-        else:
-            assert self.types(value)
-
-        inst.__dict__[self.member_name] = value
-
-
-class PrimitiveTypeMeta(type):
-
-    def __new__(cls, name, bases, namespace):
-        for key, value in namespace.items():
-            if isinstance(value, TypeAttribute):
-                value.set_member_name(key)
-
-        return super().__new__(cls, name, bases, namespace)
-
-
-class PrimitiveType(metaclass=PrimitiveTypeMeta):
+class PrimitiveType(JSONSchemaBase):
 
     def bind(self, obj):
         return obj
+
+    def to_dict(self):
+        return super().to_dict(lambda: dict(type=self.__name__))
+
+    def is_primitive(self):
+        return True
 
 
 class Array(PrimitiveType):
     __name__ = 'array'
 
-    items = TypeAttribute('items', (list, NoneType))
-    additional_items = TypeAttribute('additionalItems', bool, True)
-    max_items = TypeAttribute('maxItems', (int, NoneType))
-    min_items = TypeAttribute('minItems', (int, NoneType))
-    unique_items = TypeAttribute('uniqueItems', bool, False)
+    items = Property('items', (list, NoneType))
+    additional_items = Property('additionalItems', bool, True)
+    max_items = Property('maxItems', (int, NoneType))
+    min_items = Property('minItems', (int, NoneType))
+    unique_items = Property('uniqueItems', bool, False)
 
     def __init__(self,
                  items=None, additional_items=True,
@@ -77,11 +54,11 @@ class Boolean(PrimitiveType):
 
 
 class Numeric(PrimitiveType):
-    multiple_of = TypeAttribute('multipleOf', (int, NoneType), None)
-    maximum = TypeAttribute('maximum', (int, NoneType), None)
-    exclusive_maximum = TypeAttribute('exclusiveMaximum', bool, False)
-    minimum = TypeAttribute('minimum', (int, NoneType), None)
-    exclusive_minimum = TypeAttribute('exclusiveMinimum', bool, False)
+    multiple_of = Property('multipleOf', (int, NoneType), None)
+    maximum = Property('maximum', (int, NoneType), None)
+    exclusive_maximum = Property('exclusiveMaximum', bool, False)
+    minimum = Property('minimum', (int, NoneType), None)
+    exclusive_minimum = Property('exclusiveMinimum', bool, False)
 
     def __init__(self,
                  multiple_of=None, maximum=None, exclusive_maximum=False,
@@ -112,13 +89,58 @@ class Object(PrimitiveType):
         return isinstance(v, dict)\
             or isinstance(v, type) and issubclass(v, Mapping)
 
-    max_properties = TypeAttribute('maxProperties', (int, NoneType))
-    min_properties = TypeAttribute('minProperties', (int, NoneType))
-    required = TypeAttribute('required', list, [])
-    additional_properties = TypeAttribute('additionalProperties', bool, True)
-    properties = TypeAttribute('properties', is_valid_property, {})
-    pattern_properties = TypeAttribute('patternProperties', dict, {})
-    dependencies = TypeAttribute('dependencies', dict, {})
+    def required_to_dict(value):
+        result = []
+        for schema in value:
+            continue
+
+        return result
+
+    def properties_to_dict(value):
+        if issubclass(value, Mapping):
+            return {
+                value.schema.name: value.schema.schema.to_dict()
+                for value in vars(value).values()
+                if isinstance(value, Value)
+            }
+
+        return value
+
+    def dependencies_to_dict(value):
+        dependencies = {}
+        for key, dependency in value.items():
+            if isinstance(key, MappingProperty):
+                key = key.name
+
+            if isinstance(dependency, list):
+                for x in range(len(dependency)):
+                    value = dependency[x]
+
+                    if isinstance(value, MappingProperty):
+                        value = value.name
+
+                    dependency[x] = value
+            else:
+                if isinstance(dependency, MappingProperty):
+                    dependency = dependency.schema
+
+                if isinstance(dependency, JSONSchema):
+                    dependency = dependency.to_dict()
+                else:
+                    raise ValueError()
+
+            dependencies[key] = dependency
+
+        return dependencies
+
+    max_properties = Property('maxProperties', (int, NoneType))
+    min_properties = Property('minProperties', (int, NoneType))
+    required = Property('required', list, [], required_to_dict)
+    additional_properties = Property('additionalProperties', bool, True)
+    properties = Property('properties', is_valid_property, {},
+                          properties_to_dict)
+    pattern_properties = Property('patternProperties', dict, {})
+    dependencies = Property('dependencies', dict, {}, dependencies_to_dict)
 
     def __init__(self,
                  max_properties=None, min_properties=None, required=[],
@@ -142,9 +164,9 @@ class Object(PrimitiveType):
 class String(PrimitiveType):
     __name__ = 'string'
 
-    max_length = TypeAttribute('maxLength', (int, NoneType), None)
-    min_length = TypeAttribute('minLength', (int, NoneType), None)
-    pattern = TypeAttribute('pattern', (str, NoneType), None)
+    max_length = Property('maxLength', (int, NoneType), None)
+    min_length = Property('minLength', (int, NoneType), None)
+    pattern = Property('pattern', (str, NoneType), None)
 
     def __init__(self, max_length=None, min_length=None, pattern=None):
         self.max_length = max_length

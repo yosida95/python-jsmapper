@@ -4,10 +4,7 @@ import unittest
 
 from . import address_request
 from ..examples import address
-from ..types import (
-    Numeric,
-    Object,
-)
+from ..types import Object
 
 
 class TestPrimitiveType(unittest.TestCase):
