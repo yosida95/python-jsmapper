@@ -33,7 +33,7 @@ class PrimitiveType(JSONSchemaBase):
 class Array(PrimitiveType):
     __name__ = 'array'
 
-    items = Property('items', (list, NoneType))
+    items = Property('items', (JSONSchema, list, NoneType))
     additional_items = Property('additionalItems', bool, True)
     max_items = Property('maxItems', (int, NoneType))
     min_items = Property('minItems', (int, NoneType))
