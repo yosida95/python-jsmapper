@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 here = os.path.dirname(__file__)
 requires = [
-    'jsonschema',
+    'jsonschema>=2.3.0',
 ]
 tests_require = [
     'nose',

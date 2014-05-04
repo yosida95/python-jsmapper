@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import jsonschema
+
+from .exceptions import ValidationError
+
 __all__ = ['JSONSchema']
 
 NoneType = type(None)
@@ -119,8 +123,12 @@ class JSONSchema(JSONSchemaBase):
         self.format = format
 
     def bind(self, obj):
-        # TODO: validate and handle exception
-        return self.type.bind(obj)
+        try:
+            jsonschema.validate(obj, self.to_dict())
+        except jsonschema.ValidationError as why:
+            raise ValidationError() from why
+        else:
+            return self.type.bind(obj)
 
     def to_dict(self):
         dct = super().to_dict()
