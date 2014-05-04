@@ -24,11 +24,11 @@ license = _read("LICENSE.rst")
 
 setup(
     name='jsmapper',
-    version='0.1.1',
+    version='0.1.2',
     test_suite='jsmapper',
     author='Kohei YOSHIDA',
     author_email='license@yosida95.com',
-    description='JSON Web Token library for Python 3.',
+    description='A Object - JSON Schema Mapper.',
     long_description=readme,
     license=license,
     url='https://github.com/yosida95/python-jsmapper',
