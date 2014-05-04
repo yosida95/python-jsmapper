@@ -62,10 +62,13 @@ class Mapping(metaclass=MappingMeta):
         # TODO: support custom constructor
         inst = cls()
 
-        for key, value in vars(cls).items():
-            if not isinstance(value, Value):
-                continue
+        for base in cls.__mro__:
+            for key, value in vars(base).items():
+                if not isinstance(value, Value):
+                    continue
+                elif cls is not base and getattr(cls, key) is not value:
+                    continue
 
-            setattr(inst, key, obj.get(value.name))
+                setattr(inst, key, obj.get(value.name))
 
         return inst
