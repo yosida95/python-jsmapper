@@ -99,7 +99,7 @@ class Object(PrimitiveType):
         return result
 
     def properties_to_dict(value):
-        if issubclass(value, Mapping):
+        if isinstance(value, type) and issubclass(value, Mapping):
             return value._to_dict()
 
         return value
