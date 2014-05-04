@@ -2,29 +2,26 @@
 
 import unittest
 
-from . import address_request
-from ..examples import address
+from . import product_request
+from ..examples import product
 from ..types import Object
 
 
 class TestPrimitiveType(unittest.TestCase):
 
     def test_object(self):
-        obj = Object(properties=address.Address)
-        inst = obj.bind(address_request)
+        obj = Object(properties=product.Product)
+        inst = obj.bind(product_request)
 
-        self.assertIsInstance(inst, address.Address)
-        self.assertEqual(inst.country_name, 'Japan')
-        self.assertEqual(inst.region, 'Tokyo')
-        self.assertEqual(inst.locality, 'Chiyoda-ku')
-        self.assertEqual(inst.street_address, '1-3-6 Kudan-kita')
-        self.assertEqual(inst.extended_address, '7F')
-
-        self.assertIsNone(inst.postal_code)
-        self.assertIsNone(inst.post_office_box)
-
-    def test_object_without_properties(self):
-        obj = Object()
-        inst = obj.bind(address_request)
-
-        self.assertIs(inst, address_request)
+        self.assertIsInstance(inst, product.Product)
+        self.assertEqual(inst.id, 2)
+        self.assertEqual(inst.name, "An ice sculpture")
+        self.assertEqual(inst.price, 12.50)
+        self.assertEqual(inst.tags, ["cold", "ice"])
+        self.assertEqual(inst.dimensions.length, 7.0)
+        self.assertEqual(inst.dimensions.width, 12.0)
+        self.assertEqual(inst.dimensions.height, 9.5)
+        self.assertEqual(inst.warehouseLocation, {
+            "latitude": -78.75,
+            "longitude": 20.4,
+        })
