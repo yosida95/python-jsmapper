@@ -89,11 +89,13 @@ class Object(PrimitiveType):
         return isinstance(v, dict)\
             or isinstance(v, type) and issubclass(v, Mapping)
 
-    def required_to_dict(value):
+    def required_to_dict(properties):
         result = []
-        for schema in value:
-            continue
+        for prop in properties:
+            if isinstance(prop, MappingProperty):
+                prop = prop.name
 
+            result.append(prop)
         return result
 
     def properties_to_dict(value):
