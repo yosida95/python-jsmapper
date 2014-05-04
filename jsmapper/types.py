@@ -48,6 +48,16 @@ class Array(PrimitiveType):
         self.min_items = min_items
         self.unique_items = unique_items
 
+    def bind(self, obj):
+        if isinstance(self.items, JSONSchema):
+            return [self.items.bind(item) for item in obj]
+        elif isinstance(self.items, list):
+            result = [schema.bind(item) for schema, item in zip(self.items, obj)]
+            result.extend(obj[len(self.items):])
+            return result
+
+        return super().bind(obj)
+
 
 class Boolean(PrimitiveType):
     __name__ = 'boolean'
