@@ -58,10 +58,7 @@ class MappingMeta(type):
 class Mapping(metaclass=MappingMeta):
 
     @classmethod
-    def _bind(cls, obj):
-        # TODO: support custom constructor
-        inst = cls()
-
+    def _properties(cls):
         for base in cls.__mro__:
             for key, value in vars(base).items():
                 if not isinstance(value, Value):
@@ -69,6 +66,21 @@ class Mapping(metaclass=MappingMeta):
                 elif cls is not base and getattr(cls, key) is not value:
                     continue
 
-                setattr(inst, key, obj.get(value.name))
+                yield (key, value)
+
+    @classmethod
+    def _bind(cls, obj):
+        # TODO: support custom constructor
+        inst = cls()
+
+        for key, value in cls._properties():
+            setattr(inst, key, obj.get(value.name))
 
         return inst
+
+    @classmethod
+    def _to_dict(self):
+        return {
+            value.schema.name: value.schema.schema.to_dict()
+            for key, value in self._properties()
+        }

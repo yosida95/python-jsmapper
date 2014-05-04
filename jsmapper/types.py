@@ -100,11 +100,7 @@ class Object(PrimitiveType):
 
     def properties_to_dict(value):
         if issubclass(value, Mapping):
-            return {
-                value.schema.name: value.schema.schema.to_dict()
-                for value in vars(value).values()
-                if isinstance(value, Value)
-            }
+            return value._to_dict()
 
         return value
 

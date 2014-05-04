@@ -5,15 +5,6 @@ __all__ = ['JSONSchema']
 NoneType = type(None)
 
 
-def properties(cls):
-    for base in cls.__mro__:
-        for prop in vars(base).values():
-            if not isinstance(prop, Property):
-                continue
-
-            yield prop
-
-
 class Property:
 
     def __init__(self, property_name, types=None, default=None, to_dict=None):
@@ -70,14 +61,18 @@ class JSONSchemaBase(metaclass=JSONSchemaMeta):
 
     def to_dict(self, base=dict):
         dct = base()
-        dct.update({
-            attr.property_name: value
-            for attr, value in (
-                (attr, attr.to_dict(getattr(self, attr.member_name)))
-                for attr in properties(self.__class__)
-            )
-            if value != attr.default
-        })
+
+        for base in self.__class__.__mro__:
+            for attr in vars(base).values():
+                if not isinstance(attr, Property):
+                    continue
+
+                value = attr.to_dict(getattr(self, attr.member_name))
+                if value == attr.default:
+                    continue
+
+                dct[attr.property_name] = value
+
         return dct
 
     def is_primitive(self):
