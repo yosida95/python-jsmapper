@@ -46,17 +46,13 @@ class Property:
 class JSONSchemaMeta(type):
 
     def __init__(cls, name, bases, namespace):
-        for base in cls.__mro__:
-            for key, value in vars(base).items():
-                if not isinstance(value, Property):
-                    continue
+        for key, value in vars(cls).items():
+            if not isinstance(value, Property):
+                continue
 
-                if base is not cls:
-                    if getattr(cls, key) is not value:
-                        continue
-                else:
-                    value.set_member_name(key)
-        super().__init__(name, bases, namespace)
+            value.set_member_name(key)
+
+        return super().__init__(name, bases, namespace)
 
 
 class JSONSchemaBase(metaclass=JSONSchemaMeta):

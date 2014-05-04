@@ -109,6 +109,8 @@ class Object(PrimitiveType):
         for key, dependency in value.items():
             if isinstance(key, MappingProperty):
                 key = key.name
+            elif not isinstance(key, str):
+                raise ValueError()
 
             if isinstance(dependency, list):
                 for x in range(len(dependency)):
@@ -116,16 +118,16 @@ class Object(PrimitiveType):
 
                     if isinstance(value, MappingProperty):
                         value = value.name
+                    elif not isinstance(value, str):
+                        raise ValueError()
 
                     dependency[x] = value
-            else:
+            elif isinstance(dependency, (MappingProperty, JSONSchema)):
                 if isinstance(dependency, MappingProperty):
                     dependency = dependency.schema
-
-                if isinstance(dependency, JSONSchema):
-                    dependency = dependency.to_dict()
-                else:
-                    raise ValueError()
+                dependency = dependency.to_dict()
+            else:
+                raise ValueError()
 
             dependencies[key] = dependency
 
