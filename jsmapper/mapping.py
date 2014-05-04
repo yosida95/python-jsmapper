@@ -73,17 +73,17 @@ class Mapping(metaclass=MappingMeta):
             for key, value in vars(base).items():
                 if not isinstance(value, Value):
                     continue
-                elif cls is not base and getattr(cls, key) is not value:
+                elif cls is not base and getattr(cls, key) is not value.schema:
                     continue
 
-                yield (key, value)
+                yield value
 
     @classmethod
     def _bind(cls, obj):
         # TODO: support custom constructor
         inst = cls()
 
-        for key, value in cls._properties():
+        for value in cls._properties():
             value.bind(inst, obj.get(value.name))
 
         return inst
@@ -92,5 +92,5 @@ class Mapping(metaclass=MappingMeta):
     def _to_dict(self):
         return {
             value.schema.name: value.schema.schema.to_dict()
-            for key, value in self._properties()
+            for value in self._properties()
         }
