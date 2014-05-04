@@ -1,13 +1,20 @@
 # -*- coding: utf-8 -*-
 
+import json
+import os
 import unittest
 from nose.tools import ok_
+
 from ..schema import (
     JSONSchema,
     JSONSchemaBase,
     JSONSchemaMeta,
     Property,
 )
+from ..examples import product
+from . import product_request
+
+here = os.path.dirname(os.path.abspath(__file__))
 
 
 class DummyType(JSONSchemaBase):
@@ -37,3 +44,22 @@ class TestProperty(unittest.TestCase):
 
         inst.prop = 'value'
         self.assertEqual(inst.prop, 'value')
+
+
+class TestJSONSchema(unittest.TestCase):
+
+    def setUp(self):
+        self.maxDiff = None
+
+    def test_it(self):
+        obj = product.ProductSchema.bind([product_request])
+        self.assertIsInstance(obj, list)
+        self.assertEqual(len(obj), 1)
+
+        inst = obj[0]
+        self.assertIsInstance(inst, product.Product)
+
+    def test_to_dict(self):
+        with open(os.path.join(here, '../examples/product.json'), 'r') as fp:
+            expected = json.load(fp)
+            self.assertEqual(expected, product.ProductSchema.to_dict())

@@ -1,16 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import json
-import os
-import unittest
-
-from ..schema import JSONSchema
-from ..types import Number, Numeric
-
-from ..examples import product
-
-here = os.path.dirname(os.path.abspath(__file__))
-
 product_request = {
     "id": 2,
     "name": "An ice sculpture",
@@ -26,14 +15,3 @@ product_request = {
         "longitude": 20.4
     }
 }
-
-
-class TestJSONSchema(unittest.TestCase):
-
-    def setUp(self):
-        self.maxDiff = None
-
-    def test_to_dict(self):
-        with open(os.path.join(here, '../examples/product.json'), 'r') as fp:
-            expected = json.load(fp)
-            self.assertEqual(expected, product.ProductSchema.to_dict())
