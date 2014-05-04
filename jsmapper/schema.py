@@ -5,6 +5,15 @@ __all__ = ['JSONSchema']
 NoneType = type(None)
 
 
+def properties(cls):
+    for base in cls.__mro__:
+        for prop in vars(base).values():
+            if not isinstance(prop, Property):
+                continue
+
+            yield prop
+
+
 class Property:
 
     def __init__(self, property_name, types=None, default=None, to_dict=None):
@@ -45,12 +54,16 @@ class Property:
 
 class JSONSchemaMeta(type):
 
-    def __new__(cls, name, bases, namespace):
-        for key, value in namespace.items():
-            if isinstance(value, Property):
-                value.set_member_name(key)
-
-        return super().__new__(cls, name, bases, namespace)
+    def __init__(cls, name, bases, namespace):
+        for base in cls.__mro__:
+            for key, value in vars(base).items():
+                if isinstance(value, Property):
+                    if base is not cls:
+                        if getattr(cls, key) is not value:
+                            continue
+                    else:
+                        value.set_member_name(key)
+        super().__init__(name, bases, namespace)
 
 
 class JSONSchemaBase(metaclass=JSONSchemaMeta):
@@ -61,8 +74,7 @@ class JSONSchemaBase(metaclass=JSONSchemaMeta):
             attr.property_name: value
             for attr, value in (
                 (attr, attr.to_dict(getattr(self, attr.member_name)))
-                for attr in vars(self.__class__).values()
-                if isinstance(attr, Property)
+                for attr in properties(self.__class__)
             )
             if value != attr.default
         })
