@@ -14,6 +14,13 @@ class MappingProperty:
     def new(self, name):
         return Value(self, name)
 
+    def bind(self, obj):
+        # validation will not be executed
+        if self.schema.type is None:
+            return obj
+
+        return self.schema.type.bind(obj)
+
 
 def object_property(name):
     def receive(func):
@@ -38,6 +45,9 @@ class Value:
 
     def __set__(self, inst, value):
         inst.__dict__[self.name] = value
+
+    def bind(self, inst, obj):
+        return self.__set__(inst, self.schema.bind(obj))
 
 
 class MappingMeta(type):
@@ -74,7 +84,11 @@ class Mapping(metaclass=MappingMeta):
         inst = cls()
 
         for key, value in cls._properties():
-            setattr(inst, key, obj.get(value.name))
+            if key == 'dimensions':
+                print(value)
+
+            value.bind(inst, obj.get(value.name))
+            # setattr(inst, key, obj.get(value.name))
 
         return inst
 
