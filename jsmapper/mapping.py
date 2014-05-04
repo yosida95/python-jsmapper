@@ -84,11 +84,7 @@ class Mapping(metaclass=MappingMeta):
         inst = cls()
 
         for key, value in cls._properties():
-            if key == 'dimensions':
-                print(value)
-
             value.bind(inst, obj.get(value.name))
-            # setattr(inst, key, obj.get(value.name))
 
         return inst
 

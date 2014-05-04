@@ -3,7 +3,6 @@
 import json
 import os
 import unittest
-from pprint import pprint
 
 from ..schema import JSONSchema
 from ..types import Number, Numeric
