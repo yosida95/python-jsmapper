@@ -5,13 +5,18 @@ import os
 import unittest
 from nose.tools import ok_
 
+from ..examples import product
+from ..mapping import MappingProperty
 from ..schema import (
     JSONSchema,
     JSONSchemaBase,
     JSONSchemaMeta,
     Property,
 )
-from ..examples import product
+from ..types import (
+    Object,
+    String,
+)
 from . import product_request
 
 here = os.path.dirname(os.path.abspath(__file__))
@@ -63,3 +68,44 @@ class TestJSONSchema(unittest.TestCase):
         with open(os.path.join(here, '../examples/product.json'), 'r') as fp:
             expected = json.load(fp)
             self.assertEqual(expected, product.ProductSchema.to_dict())
+
+    def test_dict_properties_01(self):
+        schema = JSONSchema(
+            type=Object(
+                properties={
+                    "foo": JSONSchema(type=String())
+                }
+            )
+        )
+        self.assertEqual(
+            schema.to_dict(),
+            {
+                "type": "object",
+                "properties": {
+                    "foo": {
+                        "type": "string"
+                    }
+                }
+            }
+        )
+
+    def test_dict_properties_02(self):
+        schema = JSONSchema(
+            type=Object(
+                properties={
+                    "foo": MappingProperty("foo", JSONSchema(type=String()))
+                }
+            )
+        )
+
+        self.assertEqual(
+            schema.to_dict(),
+            {
+                "type": "object",
+                "properties": {
+                    "foo": {
+                        "type": "string"
+                    }
+                }
+            }
+        )
