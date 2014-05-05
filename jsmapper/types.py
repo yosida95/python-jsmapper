@@ -100,7 +100,9 @@ class Object(PrimitiveType):
             return True
         elif isinstance(v, dict):
             return all(
-                isinstance(key, str) and isinstance(value, (dict, JSONSchema))
+                isinstance(key, str) and isinstance(
+                    value, (dict, JSONSchema, MappingProperty)
+                )
                 for key, value in v.items()
             )
 
