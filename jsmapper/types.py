@@ -7,7 +7,6 @@ from .schema import (
 )
 from .mapping import (
     Mapping,
-    Value,
     MappingProperty,
 )
 
@@ -52,7 +51,8 @@ class Array(PrimitiveType):
         if isinstance(self.items, JSONSchema):
             return [self.items.bind(item) for item in obj]
         elif isinstance(self.items, list):
-            result = [schema.bind(item) for schema, item in zip(self.items, obj)]
+            result = [schema.bind(item)
+                      for schema, item in zip(self.items, obj)]
             result.extend(obj[len(self.items):])
             return result
 
@@ -96,8 +96,15 @@ class Object(PrimitiveType):
     __name__ = 'object'
 
     def is_valid_property(v):
-        return isinstance(v, dict)\
-            or isinstance(v, type) and issubclass(v, Mapping)
+        if isinstance(v, type) and issubclass(v, Mapping):
+            return True
+        elif isinstance(v, dict):
+            return all(
+                isinstance(key, str) and isinstance(value, (dict, JSONSchema))
+                for key, value in v.items()
+            )
+
+        return False
 
     def required_to_dict(properties):
         result = []
@@ -111,6 +118,13 @@ class Object(PrimitiveType):
     def properties_to_dict(value):
         if isinstance(value, type) and issubclass(value, Mapping):
             return value._to_dict()
+
+        for key, schema in value.items():
+            if isinstance(schema, MappingProperty):
+                schema = schema.schema
+
+            if isinstance(schema, JSONSchema):
+                value[key] = schema.to_dict()
 
         return value
 
