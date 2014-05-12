@@ -93,6 +93,7 @@ class JSONSchema(JSONSchemaBase):
     default = Property('default')
     ref = Property('$ref', str, "")
 
+    enum = Property("enum", (list, NoneType))
     type = Property('type', is_valid_type)
     all_of = Property('allOf', (list, NoneType))
     any_of = Property('anyOf', (list, NoneType))
@@ -103,8 +104,8 @@ class JSONSchema(JSONSchemaBase):
 
     def __init__(self,
                  schema="", title="", description="", default=None, ref="",
-                 type=None, all_of=None, any_of=None, one_of=None, not_=None,
-                 format=""):  # difinitions
+                 enum=None, type=None, all_of=None, any_of=None, one_of=None,
+                 not_=None, format=""):  # difinitions
         # metadata
         self.schema = schema
         self.title = title
@@ -113,6 +114,7 @@ class JSONSchema(JSONSchemaBase):
         self.ref = ref
 
         # general validators
+        self.enum = enum
         self.type = type
         self.all_of = all_of
         self.any_of = any_of
