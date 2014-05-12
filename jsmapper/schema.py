@@ -123,12 +123,14 @@ class JSONSchema(JSONSchemaBase):
         self.format = format
 
     def bind(self, obj):
+        self.validate(obj)
+        return self.type.bind(obj)
+
+    def validate(self, obj):
         try:
             jsonschema.validate(obj, self.to_dict())
         except jsonschema.ValidationError as why:
             raise ValidationError() from why
-        else:
-            return self.type.bind(obj)
 
     def to_dict(self):
         dct = super().to_dict()
