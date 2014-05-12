@@ -24,7 +24,7 @@ license = _read("LICENSE.rst")
 
 setup(
     name='jsmapper',
-    version='0.1.3',
+    version='0.1.4',
     test_suite='jsmapper',
     author='Kohei YOSHIDA',
     author_email='license@yosida95.com',
