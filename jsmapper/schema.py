@@ -124,13 +124,13 @@ class JSONSchema(JSONSchemaBase):
         # semantic validation
         self.format = format
 
-    def bind(self, obj):
-        self.validate(obj)
+    def bind(self, obj, *args, **kwargs):
+        self.validate(obj, *args, **kwargs)
         return self.type.bind(obj)
 
-    def validate(self, obj):
+    def validate(self, obj, *args, **kwargs):
         try:
-            jsonschema.validate(obj, self.to_dict())
+            jsonschema.validate(obj, self.to_dict(), *args, **kwargs)
         except jsonschema.ValidationError as why:
             raise ValidationError() from why
 
