@@ -41,7 +41,7 @@ class Value:
         if inst is None:
             return self.schema
 
-        return inst.__dict__[self.name]
+        return inst.__dict__.get(self.name)
 
     def __set__(self, inst, value):
         inst.__dict__[self.name] = value
