@@ -84,6 +84,9 @@ class Mapping(metaclass=MappingMeta):
         inst = cls()
 
         for value in cls._properties():
+            if value.name not in obj:
+                continue
+
             value.bind(inst, obj.get(value.name))
 
         return inst
