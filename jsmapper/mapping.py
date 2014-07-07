@@ -41,7 +41,7 @@ class Value:
         if inst is None:
             return self.schema
 
-        return inst.__dict__[self.name]
+        return inst.__dict__.get(self.name)
 
     def __set__(self, inst, value):
         inst.__dict__[self.name] = value
@@ -84,6 +84,9 @@ class Mapping(metaclass=MappingMeta):
         inst = cls()
 
         for value in cls._properties():
+            if value.name not in obj:
+                continue
+
             value.bind(inst, obj.get(value.name))
 
         return inst
