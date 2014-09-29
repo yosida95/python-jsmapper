@@ -26,6 +26,8 @@ class Property:
             return self.to_dict_func(value)
         elif isinstance(value, JSONSchemaBase):
             return value.to_dict()
+        elif isinstance(value, list):
+            return list(map(self.to_dict, value))
 
         return value
 
