@@ -136,6 +136,8 @@ class JSONSchema(JSONSchemaBase):
         except jsonschema.ValidationError as why:
             raise ValidationError() from why
 
+        return True
+
     def to_dict(self):
         dct = super().to_dict()
         if self.type:
