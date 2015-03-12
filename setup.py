@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 here = os.path.dirname(__file__)
 requires = [
-    'jsonschema>=2.3.0',
+    'jsonschema==2.4.0',
 ]
 tests_require = [
     'nose',
@@ -24,7 +24,7 @@ license = _read("LICENSE.rst")
 
 setup(
     name='jsmapper',
-    version='0.1.7',
+    version='0.1.8',
     test_suite='jsmapper',
     author='Kohei YOSHIDA',
     author_email='license@yosida95.com',
