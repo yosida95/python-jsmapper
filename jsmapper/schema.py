@@ -129,10 +129,15 @@ class JSONSchema(JSONSchemaBase):
         return self.type.bind(obj)
 
     def validate(self, obj, *args, **kwargs):
+        wrap_exception = kwargs.pop('wrap_exception', True)
+
         try:
             jsonschema.validate(obj, self.to_dict(), *args, **kwargs)
         except jsonschema.ValidationError as why:
-            raise ValidationError() from why
+            if not wrap_exception:
+                raise
+
+            raise ValidationError(why) from why
 
     def to_dict(self):
         dct = super().to_dict()
