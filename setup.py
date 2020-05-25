@@ -1,41 +1,50 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 
-from setuptools import setup, find_packages
+from setuptools import (
+    find_packages,
+    setup,
+)
 
 here = os.path.dirname(__file__)
 requires = [
     'jsonschema==2.4.0',
 ]
+if sys.version_info <= (3, 5):
+    requires.append('zipp == 1.2.0')
 tests_require = [
-    'nose',
-    'coverage'
+    'pytest',
+    'pytest-cov',
+    'pytest-flake8',
 ]
 
 
 def _read(name):
-    try:
-        return open(os.path.join(here, name)).read()
-    except:
-        return ""
-readme = _read("README.rst")
-license = _read("LICENSE.rst")
+    return open(os.path.join(here, name)).read()
+
 
 setup(
     name='jsmapper',
     version='0.1.9',
-    test_suite='jsmapper',
-    author='Kohei YOSHIDA',
-    author_email='license@yosida95.com',
     description='A Object - JSON Schema Mapper.',
-    long_description=readme,
-    license=license,
+    long_description=_read("README.rst"),
+    license='MIT',
     url='https://github.com/yosida95/python-jsmapper',
+
+    author='Kohei YOSHIDA',
+    author_email='kohei@yosida95.com',
+
     packages=find_packages(),
     python_requires='>= 3.5',
     install_requires=requires,
     tests_require=tests_require,
+    extras_require={
+        'testing': tests_require,
+    },
+    test_suite='jsmapper',
+
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",

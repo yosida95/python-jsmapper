@@ -3,10 +3,8 @@
 import json
 import os
 import unittest
-from nose.tools import (
-    eq_,
-    raises,
-)
+
+from pytest import raises
 
 from . import product_request
 from ..examples import product
@@ -54,14 +52,14 @@ def test_dependencies_to_dict():
     dep = {
         product.Product.tags: [product.Product.name],
     }
-    eq_(Object.dependencies_to_dict(dep), {'tags': ['name']})
+    assert Object.dependencies_to_dict(dep) == {'tags': ['name']}
 
 
-@raises(ValueError)
 def test_dependencies_to_dict_with_integer_key():
-    Object.dependencies_to_dict({123: [product.Product.name]})
+    with raises(ValueError):
+        Object.dependencies_to_dict({123: [product.Product.name]})
 
 
-@raises(ValueError)
 def test_dependencies_to_dict_with_integer_value():
-    Object.dependencies_to_dict({product.Product.tags: [123]})
+    with raises(ValueError):
+        Object.dependencies_to_dict({product.Product.tags: [123]})

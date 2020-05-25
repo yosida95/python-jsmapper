@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from nose.tools import (
-    eq_,
-    ok_,
-)
-
 from ..mapping import (
     Mapping,
     MappingProperty,
@@ -24,9 +19,9 @@ def test_object_property():
     def prop():
         return schema
 
-    ok_(isinstance(prop, MappingProperty))
-    eq_(prop.name, 'property')
-    eq_(prop.schema, schema)
+    assert isinstance(prop, MappingProperty)
+    assert prop.name == 'property'
+    assert prop.schema == schema
 
 
 class Base(Mapping):
@@ -40,7 +35,7 @@ class Extended(Base):
 
 
 def test_inheritance():
-    eq_({Base.foo, Base.bar},
-        set(prop.schema for prop in Base._properties()))
-    eq_({Extended.foo, Extended.bar, Extended.baz},
-        set(prop.schema for prop in Extended._properties()))
+    assert {Base.foo, Base.bar} \
+        == set(prop.schema for prop in Base._properties())
+    assert {Extended.foo, Extended.bar, Extended.baz} \
+        == set(prop.schema for prop in Extended._properties())

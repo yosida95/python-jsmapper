@@ -3,7 +3,6 @@
 import json
 import os
 import unittest
-from nose.tools import ok_
 
 from ..examples import product
 from ..mapping import MappingProperty
@@ -29,9 +28,9 @@ class DummyType(JSONSchemaBase):
 
 
 def test_is_valid_type():
-    ok_(JSONSchema.is_valid_type(JSONSchemaBase()) is False)
-    ok_(JSONSchema.is_valid_type(DummyType()))
-    ok_(JSONSchema.is_valid_type(None))
+    assert JSONSchema.is_valid_type(JSONSchemaBase()) is False
+    assert JSONSchema.is_valid_type(DummyType())
+    assert JSONSchema.is_valid_type(None)
 
 
 class TestProperty(unittest.TestCase):
