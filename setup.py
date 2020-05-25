@@ -33,6 +33,7 @@ setup(
     license=license,
     url='https://github.com/yosida95/python-jsmapper',
     packages=find_packages(),
+    python_requires='>= 3.5',
     install_requires=requires,
     tests_require=tests_require,
     classifiers=[
@@ -41,8 +42,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.3",
-        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
