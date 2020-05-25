@@ -1,16 +1,25 @@
+---
+dist: xenial
 language: python
-env:
-    matrix:
-        - TOXENV="py33"
-        - TOXENV="py34"
-        - TOXENV="coverage"
+matrix:
+  include:
+    - python: "3.5"
+      env:
+        TOXENV: py35
+    - python: "3.6"
+      env:
+        TOXENV: py36
+    - python: "3.7"
+      env:
+        TOXENV: py37
+    - python: "3.8"
+      env:
+        TOXENV: py38
 install:
-    - pip install tox
-    - if test "$TOXENV" = "coverage"; then pip install coveralls; fi
+  - pip install tox
+  - pip install coveralls
 script:
-    - tox
+  - tox
 after_success:
-    - if test "$TOXENV" = "coverage"; then coveralls; fi
-notifications:
-    slack:
-        - secure: UhJ3YmHaxgsOFlKn2ETSNSTma1w8IgGLsYcYq5YkuoiAlVk6SwFfdTDO3LbizMecAOj8VgFowXFcBDH/Rx3rx5D3NwcvDM24jyDqoCn+tds1IguQqxEXh/3BPSfFNbRoCmiyyOMqMR2hnorJRZau4+KJsxwKb9Fz60EMUASMw7A=
+  - coveralls
+...
