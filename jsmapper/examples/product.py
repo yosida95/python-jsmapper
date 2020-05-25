@@ -29,7 +29,7 @@ class Product(Mapping):
         required=[Dimensions.length, Dimensions.width, Dimensions.height]
     ))
     warehouseLocation = JSONSchema(
-        ref="http://json-schema.org/geo",
+        ref="https://storage.googleapis.com/yosida95/python-jsmapper/geographical-location.schema.json",  # noqa
         description="Coordinates of the warehouse with the product"
     )
 
