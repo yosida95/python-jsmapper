@@ -10,7 +10,7 @@ from setuptools import (
 
 here = os.path.dirname(__file__)
 requires = [
-    'jsonschema==2.4.0',
+    'jsonschema==2.6.0',
 ]
 if sys.version_info <= (3, 5):
     requires.append('zipp == 1.2.0')
