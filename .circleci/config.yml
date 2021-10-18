@@ -26,7 +26,7 @@ commands:
 jobs:
   build35:
     docker:
-      - image: circleci/python:3.5
+      - image: circleci/python:3.10
     environment:
       ARTIFACTS: /tmp/jsmapper
     steps:
@@ -39,7 +39,7 @@ jobs:
           path: "/tmp/jsmapper"
   build36:
     docker:
-      - image: circleci/python:3.6
+      - image: circleci/python:3.10
     environment:
       ARTIFACTS: /tmp/jsmapper
     steps:
@@ -52,7 +52,7 @@ jobs:
           path: "/tmp/jsmapper"
   build37:
     docker:
-      - image: circleci/python:3.7
+      - image: circleci/python:3.10
     environment:
       ARTIFACTS: /tmp/jsmapper
     steps:
@@ -65,7 +65,7 @@ jobs:
           path: "/tmp/jsmapper"
   build38:
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/python:3.10
     environment:
       ARTIFACTS: /tmp/jsmapper
     steps:
