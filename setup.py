@@ -13,7 +13,7 @@ requires = [
     'jsonschema==2.6.0',
 ]
 if sys.version_info <= (3, 5):
-    requires.append('zipp == 1.2.0')
+    requires.append('zipp ==3.19.2')
 tests_require = [
     'pytest',
     'pytest-cov',
